@@ -8,7 +8,7 @@ project(T1 VERSION 1.0)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_executable(T1 test_init.cc)
+add_executable(T1 main.cc test_access.cc)
 
 target_include_directories(T1 PUBLIC
                            "${PROJECT_BINARY_DIR}"
@@ -16,5 +16,5 @@ target_include_directories(T1 PUBLIC
 
 target_link_libraries(T1 PUBLIC DynUpdate gtest pthread)
 
-gtest_add_tests(TARGET T1
-                SOURCES test_init.cc)
+gtest_discover_tests(T1 TEST_PREFIX new:)
+add_test(NAME monolithic COMMAND tests)
