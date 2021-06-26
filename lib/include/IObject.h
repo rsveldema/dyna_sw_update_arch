@@ -24,8 +24,6 @@ class ClassMetaData
     }
 };
 
-
-
 /** The location of stuff in memory is fixed but their layout may change.
  */
 class UpdateableObject
@@ -37,17 +35,25 @@ class UpdateableObject
         m_storage.resize(meta_data.size);
     }
 
-    void *getStorage()
+    void* getStorage()
     {
         return m_storage.data();
     }
 
     static const ClassMetaData& getClassMetaData(const std::string& class_name);
 
-
-private:
+  private:
     std::vector<u_char> m_storage;
 };
+
+template <typename T> class UpdatedObject : public UpdateableObject
+{
+  public:
+    UpdatedObject(const std::string& class_name) : UpdateableObject(class_name)
+    {
+    }
+};
+
 
 /** a member of a class.
  * Members may be added/removed to create new versions of a struct on the fly.
@@ -59,21 +65,73 @@ template <typename T> class Member
     {
         auto& clazz = UpdateableObject::getClassMetaData(class_name);
         auto& field = clazz.getFieldMetaData(field_name);
-        auto offset = field.offset;
-        m_data = (T*) parent->getStorage() + offset;
+        m_offset = field.offset;
+        m_data = (T*)parent->getStorage() + m_offset;
+    }
+
+    Member(const Member& member) = delete;
+
+    T& operator*()
+    {
+        return *m_data;
+    }
+    const T& operator*() const
+    {
+        return *m_data;
+    }
+
+    T& operator->()
+    {
+        return *m_data;
+    }
+
+    const T& operator->() const
+    {
+        return *m_data;
+    }
+
+    bool operator ==(const Member& other) const
+    {
+      return *m_data == *other.m_data;
+    }
+
+    bool operator !=(const Member& other) const
+    {
+      return *m_data != *other.m_data;
+    }
+
+    bool operator >(const Member& other) const
+    {
+      return *m_data > *other.m_data;
+    }
+    
+    bool operator <(const Member& other) const
+    {
+      return *m_data < *other.m_data;
+    }
+    
+    bool operator <=(const Member& other) const
+    {
+      return *m_data <= *other.m_data;
+    }
+
+    bool operator >=(const Member& other) const
+    {
+      return *m_data >= *other.m_data;
     }
 
   private:
+    uint32_t m_offset = 0xffff'ffff;
     T* m_data = nullptr;
 };
 
-template <typename T> class UpdatedObject : public UpdateableObject
-{
-};
 
 class MyData_V1 : public UpdateableObject
 {
   public:
+    MyData_V1() : UpdateableObject(typeid(*this).name())
+    {
+    }
     Member<int> d1{this, 1234, typeid(*this).name(), "d1"};
     Member<int> d2{this, 5678, typeid(*this).name(), "d2"};
 };
@@ -81,8 +139,17 @@ class MyData_V1 : public UpdateableObject
 class MyData_V2 : public UpdatedObject<MyData_V1>
 {
   public:
+    MyData_V2() : UpdatedObject<MyData_V1>(typeid(*this).name())
+    {
+    }
     Member<int> d1{this, 4321, typeid(*this).name(), "d1"};
     Member<int> d1a{this, 1111, typeid(*this).name(), "d1a"};
+    Member<int> d2{this, 8765, typeid(*this).name(), "d2"};
+};
+
+class MyData_V3 : public UpdatedObject<MyData_V1>
+{
+  public:
     Member<int> d2{this, 8765, typeid(*this).name(), "d2"};
 };
 
