@@ -14,6 +14,14 @@ class IObject
     std::map<std::string, int> mapping;
 };
 
+
+/** a member of a class.
+ * Members may be added/removed to create new versions of a struct on the fly.
+ */
+class IMember
+{
+};
+
 } // namespace DUpdate
 
 #endif
