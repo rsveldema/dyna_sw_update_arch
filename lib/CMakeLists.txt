@@ -8,9 +8,11 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 
-add_library(DynUpdate dyn_update.cc)
+add_library(DynUpdate STATIC dyn_update.cc)
 
 target_include_directories(DynUpdate PUBLIC
-                           "${PROJECT_BINARY_DIR}"
+                           include
                            )
                            
+                           
+set_target_properties(DynUpdate PROPERTIES PUBLIC_HEADER "dyn_update.h")
