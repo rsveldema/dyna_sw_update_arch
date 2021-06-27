@@ -12,7 +12,6 @@ add_library(DynUpdate STATIC dyn_update.cc)
 
 target_include_directories(DynUpdate PUBLIC
                            include
-                           )
-                           
+                           )                           
                            
 set_target_properties(DynUpdate PROPERTIES PUBLIC_HEADER "dyn_update.h")

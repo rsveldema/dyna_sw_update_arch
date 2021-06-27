@@ -5,13 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) Launch",
+            "name": "Python: metagen",
+            "type": "python",
+            "request": "launch",
+            "program": "metagen/metagen.py",
+            "args": ["lib/include/IObject.h"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "run-tests",
             "type": "cppdbg",
             "request": "launch",
-            "program": "enter program name, for example ${workspaceFolder}/a.out",
+            "program": "./build/tests/T1",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
