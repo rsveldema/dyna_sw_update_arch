@@ -18,6 +18,10 @@ void UpdateableObject::registerField(IField* field)
 
         fields.push_back(field);
     }
+    else
+    {
+        fprintf(stderr, "registerField failed: something weird happened: failed to find field meta data (for %s)\n", field->field_name);
+    }
 }
 
 Reflection::ClassMetaData& UpdateableObject::getClassMetaData(const std::string& class_name)

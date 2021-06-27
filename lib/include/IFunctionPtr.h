@@ -33,21 +33,17 @@ class IFunctionPtr
 /** Functions are relocatable.
  */
 
-template <typename func_t> class FunctionPtr : public IFunctionPtr
+template <class ...ArgTypes> 
+class FunctionPtr : public IFunctionPtr
 {
   public:
-    FunctionPtr(const std::string& name, func_t func) : IFunctionPtr(name, (ifunc_t)func)
+    FunctionPtr(const std::string& name, void(*func)(ArgTypes...)) : IFunctionPtr(name, (ifunc_t)func)
     {
     }
 
-    void operator()()
+    void operator()(ArgTypes... args)
     {
-        return ((func_t)get())();
-    }
-
-    void replace(const std::string& name, ifunc_t func)
-    {
-        return IFunctionPtr::replace(name, func);
+        return ((void(*)(ArgTypes...))get())(args...);
     }
 };
 

@@ -6,6 +6,7 @@
 struct UpdateInfo
 {
     const char* name;
+    const char* prototype;
     DUpdate::IFunctionPtr::ifunc_t func;
 };
 
