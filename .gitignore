@@ -37,3 +37,4 @@ Makefile
 *.cmake
 build
 CMakeFiles
+CMakeCache.txt

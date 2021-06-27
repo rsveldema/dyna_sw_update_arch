@@ -47,8 +47,9 @@ void install_update(const std::string& so_filename)
     {
         auto name = update_info->name;
         auto func = update_info->func;
+        auto proto = update_info->prototype;
 
-        IFunctionPtr::replace(name, func);
+        IFunctionPtr::replace(name, func, proto);
         update_info++;
     }
 }
