@@ -3,6 +3,9 @@
 
 #include <map>
 #include <vector>
+#include <assert.h>
+
+#include "reflection.h"
 
 namespace DUpdate
 {

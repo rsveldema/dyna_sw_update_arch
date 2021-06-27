@@ -6,7 +6,6 @@
 namespace DUpdate
 {
 
-
 class IFunctionPtr
 {
   public:
@@ -17,18 +16,17 @@ class IFunctionPtr
   public:
     IFunctionPtr(const std::string& name, ifunc_t func) : name(name)
     {
-      func_index = register_func_ptr(name, func);
+        func_index = register_func_ptr(name, func);
     }
-    
+
     ifunc_t get();
     static size_t register_func_ptr(const std::string& name, ifunc_t func);
 
-    template<typename FUNC>
-    static void replace(const std::string& name, FUNC func)
+    template <typename FUNC> static void replace(const std::string& name, FUNC func)
     {
-      do_replace(name, (ifunc_t) func);
+        do_replace(name, (ifunc_t)func);
     }
-    
+
     static void do_replace(const std::string& name, ifunc_t func);
 };
 
@@ -49,7 +47,7 @@ template <typename func_t> class FunctionPtr : public IFunctionPtr
 
     void replace(const std::string& name, ifunc_t func)
     {
-      return IFunctionPtr::replace(name, func);
+        return IFunctionPtr::replace(name, func);
     }
 };
 

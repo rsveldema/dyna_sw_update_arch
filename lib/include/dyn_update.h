@@ -1,11 +1,11 @@
 #ifndef DYNA_UPDATER___H____
 #define DYNA_UPDATER___H____
 
-#include <vector>
 #include <string>
+#include <vector>
 
-#include "reflection.h"
 #include "IFunction.h"
 #include "IObject.h"
+#include "reflection.h"
 
 #endif
