@@ -1,6 +1,10 @@
 # Infrastructure for zero-downtime firmware update.
 
 We try to have zero-downtime when installing a new firmware image on a device.
+I believe we cannot achieve this without an architectural change, hence this proof of concept
+to illustrate how such a thing can function with an example Software architecture setup.
+
+This proof of concept runs under Linux with GCC 9.*.
 
 ## The Traditional solution
 

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "IFunction.h"
+#include "IFunctionPtr.h"
 #include "IObject.h"
 #include "reflection.h"
 

@@ -12,6 +12,7 @@ add_executable(T1 main.cc test_access.cc test_loading.cc metadata.cc)
 
 add_library(TestLib SHARED 
             sharedlib_test.cc)
+target_link_libraries(TestLib PUBLIC DynUpdate gtest pthread)
 
 target_include_directories(T1 PUBLIC
                            "${PROJECT_BINARY_DIR}"

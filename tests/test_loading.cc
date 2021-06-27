@@ -62,14 +62,10 @@ TEST_F(TestLoadFunction, test_shared_lib_loader)
     EXPECT_FALSE(run_v1);
     EXPECT_TRUE(run_v2);
 
-    UpdateLoader loader("./build/tests/libTestLib.so");
-    auto loaded_func = loader.get("foo_v3");
-    ASSERT_NE(loaded_func, nullptr);
-
-    IFunctionPtr::replace("foo", loaded_func);
+    install_update("./build/tests/libTestLib.so");
 
     run_v1 = run_v2 = false;
     func();
-    EXPECT_FALSE(run_v1);
-    EXPECT_FALSE(run_v2); // false as it should call the one from the shared-lib now.
+    EXPECT_FALSE(run_v1); // false as it should call the one from the shared-lib now.
+    EXPECT_FALSE(run_v2); // false too for same reason.
 }

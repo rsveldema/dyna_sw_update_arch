@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 
-add_library(DynUpdate STATIC UpdateableObject.cc IFunction.cc reflection.cc UpdateLoader.cc)
+add_library(DynUpdate STATIC UpdateableObject.cc IFunctionPtr.cc reflection.cc UpdateLoader.cc)
 
 target_include_directories(DynUpdate PUBLIC
                            include
