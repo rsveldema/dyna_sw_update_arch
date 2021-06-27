@@ -16,7 +16,7 @@ target_include_directories(T1 PUBLIC
 
 add_custom_command(OUTPUT metadata.cc
                            WORKING_DIRECTORY 
-                          COMMAND python ../../metagen/metagen.py metadata.cc ../../metagen/metadata-in.cc ../../lib/include/IObject.h
+                          COMMAND python ../../metagen/metagen.py metadata.cc ../../metagen/metadata-in.cc ../../tests/test_structure_changes.h
                           DEPENDS ../lib/include/IObject.h ../metagen/metagen.py ../metagen/metadata-in.cc
                           )
 target_link_libraries(T1 PUBLIC DynUpdate gtest pthread)

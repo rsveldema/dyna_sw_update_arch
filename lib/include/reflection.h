@@ -8,7 +8,17 @@ namespace Reflection
 struct FieldMetaData
 {
     std::string name;
-    size_t getOffset();
+    size_t size;
+    size_t offset;
+
+    size_t getSize() const
+    {
+        return size;
+    }
+    size_t getOffset() const
+    {
+        return offset;
+    }
 };
 
 struct ClassMetaData
@@ -21,9 +31,9 @@ struct ClassMetaData
     size_t size;
 
     ClassMetaData(const std::string& name, const std::string& compat, const std::vector<FieldMetaData>& fields)
-    : name(name), compat(compat), fields(fields)
+        : name(name), compat(compat), fields(fields)
     {
-        register_class();
+        registerClass();
     }
 
     size_t getSize() const
@@ -31,9 +41,23 @@ struct ClassMetaData
         assert(linked);
         return size;
     }
-    FieldMetaData& getFieldMetaData(const std::string& name);
+    
+    FieldMetaData* getFieldMetaData(const std::string& name)
+    {
+        for (auto& f : fields)
+        {
+            if (f.name == name)
+            {
+                return &f;
+            }
+        }
+        fprintf(stderr, "failed to find field %s in class %s\n", name.c_str(), this->name.c_str());
+        return nullptr;
+    }
 
-    void register_class();
+    void registerClass();
+
+    void link();
 };
 } // namespace Reflection
 

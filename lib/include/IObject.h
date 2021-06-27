@@ -7,22 +7,27 @@
 namespace DUpdate
 {
 
+class UpdateableObject;
+
+class IField
+{
+  public:
+    const char* field_name;
+    void* m_data = nullptr;
+
+  public:
+    IField(const char* field_name, UpdateableObject* parent);
+};
+
 /** The location of stuff in memory is fixed but their layout may change.
  */
 class UpdateableObject
 {
   public:
     UpdateableObject(const std::string& class_name)
+    : clazz(getClassMetaData(class_name))
     {
-        auto& meta_data = getClassMetaData(class_name);
-        if (!meta_data.linked)
-        {
-            meta_data.linked = true;
-            
-            link(class_name);
-        }
-
-        m_storage.resize(meta_data.getSize());
+        link(class_name);
     }
 
     void* getStorage()
@@ -32,9 +37,15 @@ class UpdateableObject
     }
 
     static Reflection::ClassMetaData& getClassMetaData(const std::string& class_name);
+  
+    void copy_linkage(UpdateableObject* parent);
+
+    void registerField(IField* field);
 
   private:
+    Reflection::ClassMetaData& clazz;
     std::vector<u_char> m_storage;
+    std::vector<IField*> fields;
 
     void link(const std::string& class_name);
 };
@@ -42,18 +53,28 @@ class UpdateableObject
 template <typename T> class UpdatedObject : public UpdateableObject
 {
   public:
-    UpdatedObject(const std::string& class_name) : UpdateableObject(class_name)
+    UpdatedObject(const std::string& class_name) 
+      : UpdateableObject(class_name)
     {
     }
+
+    T& cast()
+    {
+      tmp.copy_linkage(this);
+      return tmp;
+    }
+
+  private:
+    T tmp;
 };
 
 /** a member of a class.
  * Members may be added/removed to create new versions of a struct on the fly.
  */
-template <typename T> class Field
+template <typename T> class Field : public IField
 {
   public:
-    Field(const char* field_name) : field_name(field_name)
+    Field(const char* field_name, UpdateableObject* parent) : IField(field_name, parent)
     {
     }
 
@@ -66,113 +87,78 @@ template <typename T> class Field
 
     T& operator*()
     {
-        assert(m_data);
-        return *m_data;
+        return get();
     }
     const T& operator*() const
     {
-        assert(m_data);
-        return *m_data;
+        return get();
     }
 
     T& operator->()
     {
-        assert(m_data);
-        return *m_data;
+        return get();
     }
 
     const T& operator->() const
     {
-        assert(m_data);
-        return *m_data;
+        return get();
     }
 
     bool operator==(const Field& other) const
     {
-        assert(m_data);
-        return *m_data == *other.m_data;
+        return get() == other.get();
     }
 
     bool operator!=(const Field& other) const
     {
-        assert(m_data);
-        return *m_data != *other.m_data;
+        return get() != other.get();
     }
 
     bool operator>(const Field& other) const
     {
-        assert(m_data);
-        return *m_data > *other.m_data;
+        return get() > other.get();
     }
 
     bool operator<(const Field& other) const
     {
-        assert(m_data);
-        return *m_data < *other.m_data;
+        return get() < other.get();
     }
 
     bool operator<=(const Field& other) const
     {
-        assert(m_data);
-        return *m_data <= *other.m_data;
+        return get() <= other.get();
     }
 
     bool operator>=(const Field& other) const
     {
-        assert(m_data);
-        return *m_data >= *other.m_data;
+        return get() >= other.get();
     }
 
-    T& operator=(const T& value) const
+    T& operator=(const T& value)
+    {
+        get() = value;
+        return get();
+    }
+
+    const T& get() const
     {
         assert(m_data);
-        *m_data = value;
-        return *m_data;
+        return *(T*)m_data;
     }
 
-  private:
-    uint32_t m_offset = 0xffff'ffff;
-    T* m_data = nullptr;
-    const char* field_name;
-};
-
-#define FIELD(TYPE, NAME) Field<TYPE> NAME{#NAME}
-
-class MyData_V1 : public UpdateableObject
-{
-  public:
-    MyData_V1() : UpdateableObject(typeid(*this).name())
+    T& get()
     {
-        d1 = 1234;
-        d2 = 5678;
+        assert(m_data);
+        return *(T*)m_data;
     }
-    FIELD(int, d1);
-    FIELD(int, d2);
 };
 
-class MyData_V2 : public UpdatedObject<MyData_V1>
-{
-  public:
-    MyData_V2() : UpdatedObject<MyData_V1>(typeid(*this).name())
-    {
-        d1 = 1234;
-        d3 = 1111;
-        d2 = 5678;
+#define FIELD(TYPE, NAME)                                                                                              \
+    Field<TYPE> NAME                                                                                                   \
+    {                                                                                                                  \
+#NAME, this                                                                                                    \
     }
-    FIELD(int, d1);
-    FIELD(int, d3);
-    FIELD(int, d2);
-};
 
-class MyData_V3 : public UpdatedObject<MyData_V1>
-{
-  public:
-    MyData_V3() : UpdatedObject<MyData_V1>(typeid(*this).name())
-    {
-        d2 = 9999;
-    }
-    FIELD(int, d2);
-};
 
 } // namespace DUpdate
 

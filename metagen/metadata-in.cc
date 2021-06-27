@@ -3,6 +3,10 @@
 
 #include "dyn_update.h"
 
+{% for clazz in classes -%}
+#include "{{clazz.file}}"
+{% endfor %}
+
 namespace MetaData
 {
     {% for clazz in classes -%}
@@ -12,7 +16,7 @@ namespace MetaData
         {
             {% for field in clazz.fields -%}
                 {% if not field.first %},{%endif %} 
-                Reflection::FieldMetaData{ "{{field.name}}" }
+                Reflection::FieldMetaData{ "{{field.name}}", sizeof({{field.type}}) }
             {% endfor %}
         }
     };
