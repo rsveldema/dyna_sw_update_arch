@@ -1,11 +1,11 @@
 #include "dyn_update.h"
 
-namespace DUpdate
+namespace Reflection
 {
 namespace
 {
 std::map<std::string, Reflection::ClassMetaData*>* clazz_map;
-
+}
 std::map<std::string, Reflection::ClassMetaData*>& getClassMap()
 {
     if (!clazz_map)
@@ -14,7 +14,6 @@ std::map<std::string, Reflection::ClassMetaData*>& getClassMap()
     }
     return *clazz_map;
 }
-} // namespace
 
 Reflection::ClassMetaData& __getClassMetaData(const std::string& class_name)
 {
@@ -30,6 +29,12 @@ Reflection::ClassMetaData& __getClassMetaData(const std::string& class_name)
     abort();
 }
 
+    
+} // namespace Reflection
+
+
+namespace DUpdate
+{
 IField::IField(const char* field_name, UpdateableObject* parent)
 {
     this->field_name = field_name;
@@ -49,7 +54,7 @@ void UpdateableObject::registerField(IField* field)
 
 Reflection::ClassMetaData& UpdateableObject::getClassMetaData(const std::string& class_name)
 {
-    return __getClassMetaData(class_name);
+    return Reflection::__getClassMetaData(class_name);
 }
 
 void UpdateableObject::link(const std::string& class_name)
@@ -73,38 +78,3 @@ void UpdateableObject::copy_linkage(UpdateableObject* parent)
 }
 
 } // namespace DUpdate
-
-namespace Reflection
-{
-void ClassMetaData::registerClass()
-{
-    auto& map = DUpdate::getClassMap();
-    map[name] = this;
-}
-
-void ClassMetaData::link()
-{
-    if (linked)
-    {
-        return;
-    }
-    linked = true;
-
-    if (compat != "")
-    {
-        auto& compat_clazz = DUpdate::__getClassMetaData(compat);
-        compat_clazz.link();
-    }
-
-    int offset = 0;
-    for (auto& field : fields)
-    {
-        fprintf(stderr, "ASSIGN OFFSET: %s --> %d\n", field.name.c_str(), offset);
-        field.offset = offset;
-        offset += field.getSize();
-    }
-
-    this->size = offset;
-}
-
-} // namespace Reflection

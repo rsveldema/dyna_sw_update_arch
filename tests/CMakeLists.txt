@@ -8,7 +8,7 @@ project(T1 VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_executable(T1 main.cc test_access.cc metadata.cc)
+add_executable(T1 main.cc test_access.cc test_loading.cc metadata.cc)
 
 target_include_directories(T1 PUBLIC
                            "${PROJECT_BINARY_DIR}"

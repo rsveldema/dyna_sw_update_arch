@@ -5,14 +5,14 @@
 
 using namespace DUpdate;
 
-class TestStartup : public testing::Test
+class TestCompatibleMemoryAccess : public testing::Test
 {
 };
 
-TEST_F(TestStartup, test_basic_bootup1)
+TEST_F(TestCompatibleMemoryAccess, test_cast1)
 {
-    auto *new_version = new MyData_V2();
-    auto *old_version = &new_version->cast();
+    MyData_V2 *new_version = new MyData_V2();
+    MyData_V1 *old_version = &new_version->cast();
 
     printf("TEST-d1::::::::::: %d %d\n", new_version->d1.get(), old_version->d1.get());
     printf("TEST-d2::::::::::: %d %d\n", new_version->d2.get(), old_version->d2.get());
@@ -21,17 +21,17 @@ TEST_F(TestStartup, test_basic_bootup1)
     ASSERT_EQ(new_version->d2, old_version->d2);
 }
 
-TEST_F(TestStartup, test_basic_bootup2)
+TEST_F(TestCompatibleMemoryAccess, test_cast2)
 {
-    auto *new_version = new MyData_V3();
-    auto *old_version = &new_version->cast();
+    MyData_V3 *new_version = new MyData_V3();
+    MyData_V1 *old_version = &new_version->cast();
 
     printf("TEST-d2::::::::::: %d %d\n", new_version->d2.get(), old_version->d2.get());
 
     ASSERT_EQ(new_version->d2, old_version->d2);
 }
 
-TEST_F(TestStartup, test_alias)
+TEST_F(TestCompatibleMemoryAccess, test_alias)
 {
     auto *new_version = new MyData_V3();
     auto *old_version = &new_version->cast();
@@ -42,4 +42,14 @@ TEST_F(TestStartup, test_alias)
 
     new_version->d2 = 42;
     ASSERT_EQ(new_version->d2, old_version->d2);
+}
+
+TEST_F(TestCompatibleMemoryAccess, test_non_existing)
+{
+    auto *new_version = new MyData_V3();
+    auto *old_version = &new_version->cast();
+
+    printf("TEST-d2::::::::::: %d %d\n", new_version->d2.get(), old_version->d2.get());
+
+    old_version->d1 = 42;
 }

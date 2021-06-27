@@ -2,6 +2,7 @@
 #define REFLECTION_H_____
 
 #include <assert.h>
+#include <map>
 
 namespace Reflection
 {
@@ -59,6 +60,11 @@ struct ClassMetaData
 
     void link();
 };
+
+
+ClassMetaData& __getClassMetaData(const std::string& class_name);
+std::map<std::string, Reflection::ClassMetaData*>& getClassMap();
+
 } // namespace Reflection
 
 #endif
