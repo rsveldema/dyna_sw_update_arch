@@ -62,7 +62,7 @@ struct ClassMetaData
 };
 
 
-ClassMetaData& __getClassMetaData(const std::string& class_name);
+ClassMetaData& getClassMetaData(const std::string& class_name);
 std::map<std::string, Reflection::ClassMetaData*>& getClassMap();
 
 } // namespace Reflection

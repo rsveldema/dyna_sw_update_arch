@@ -1,37 +1,5 @@
 #include "dyn_update.h"
 
-namespace Reflection
-{
-namespace
-{
-std::map<std::string, Reflection::ClassMetaData*>* clazz_map;
-}
-std::map<std::string, Reflection::ClassMetaData*>& getClassMap()
-{
-    if (!clazz_map)
-    {
-        clazz_map = new std::map<std::string, Reflection::ClassMetaData*>();
-    }
-    return *clazz_map;
-}
-
-Reflection::ClassMetaData& __getClassMetaData(const std::string& class_name)
-{
-    auto& map = getClassMap();
-
-    auto it = map.find(class_name);
-    if (it != map.end())
-    {
-        return *it->second;
-    }
-
-    fprintf(stderr, "failed to find class %s in meta-data\n", class_name.c_str());
-    abort();
-}
-
-    
-} // namespace Reflection
-
 
 namespace DUpdate
 {
@@ -54,7 +22,7 @@ void UpdateableObject::registerField(IField* field)
 
 Reflection::ClassMetaData& UpdateableObject::getClassMetaData(const std::string& class_name)
 {
-    return Reflection::__getClassMetaData(class_name);
+    return Reflection::getClassMetaData(class_name);
 }
 
 void UpdateableObject::link(const std::string& class_name)
